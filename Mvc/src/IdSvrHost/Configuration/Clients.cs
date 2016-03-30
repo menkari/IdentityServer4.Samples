@@ -10,6 +10,27 @@ namespace IdSvrHost.Configuration
             return new List<Client>
             {
                 ///////////////////////////////////////////
+                // Matt test client for bearer token grant
+                //////////////////////////////////////////
+                new Client
+                {
+                    ClientId = "resx",
+                    ClientSecrets = new List<Secret>
+                    {
+                        new Secret("secret".Sha256())
+                    },
+
+                    Flow = Flows.ResourceOwner,
+
+                    AllowedScopes = new List<string>
+                    {
+                        "api1", "api2"
+                    },
+                    RefreshTokenUsage = TokenUsage.ReUse,
+                    AllowedCorsOrigins = new List<string>() {"*" }
+                },
+
+                ///////////////////////////////////////////
                 // Console Client Credentials Flow Sample
                 //////////////////////////////////////////
                 new Client
@@ -63,7 +84,7 @@ namespace IdSvrHost.Configuration
                     },
 
                     Flow = Flows.Custom,
-                    
+
                     AllowedCustomGrantTypes = new List<string>
                     {
                         "custom"

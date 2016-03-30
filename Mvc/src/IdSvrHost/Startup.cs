@@ -8,10 +8,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using IdSvrHost.Configuration;
-using IdSvrHost.Extensions;
 using Microsoft.Extensions.PlatformAbstractions;
 using System.Security.Cryptography.X509Certificates;
 using System.IO;
+using IdentityServer4.Core.Services;
+using IdentityServer4.Core.Validation;
+using IdSvrHost.Services;
+using CustomGrantValidator = IdSvrHost.Extensions.CustomGrantValidator;
 
 namespace IdSvrHost2
 {
@@ -35,10 +38,12 @@ namespace IdSvrHost2
 
             builder.AddInMemoryClients(Clients.Get());
             builder.AddInMemoryScopes(Scopes.Get());
-            builder.AddInMemoryUsers(Users.Get());
+
+            //builder.AddInMemoryUsers(Users.Get());
+            services.AddTransient<IResourceOwnerPasswordValidator, SqlResourceOwnerPasswordValidator>();
+            services.AddTransient<IProfileService, SqlProfileService>();
 
             builder.AddCustomGrantValidator<CustomGrantValidator>();
-
 
             // for the UI
             services
@@ -52,8 +57,8 @@ namespace IdSvrHost2
 
         public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)
         {
-            loggerFactory.AddConsole(LogLevel.Verbose);
-            loggerFactory.AddDebug(LogLevel.Verbose);
+            loggerFactory.AddConsole(LogLevel.Debug);
+            loggerFactory.AddDebug(LogLevel.Debug);
 
             app.UseDeveloperExceptionPage();
             app.UseIISPlatformHandler();
